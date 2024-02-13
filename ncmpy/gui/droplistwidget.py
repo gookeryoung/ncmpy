@@ -23,7 +23,7 @@ class DropListWidget(QListWidget):
             for url in urls:
                 name = url.toLocalFile()
                 info = QFileInfo(name)
-                if info.suffix() != 'ncm' or info.isDir():
+                if info.suffix() != "ncm" or info.isDir():
                     continue
                 self.add_file(name)
             self.dropEnd.emit()
