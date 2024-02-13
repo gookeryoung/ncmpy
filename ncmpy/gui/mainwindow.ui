@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>600</width>
-    <height>450</height>
+    <height>464</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -43,16 +43,16 @@ font: 11pt &quot;HarmonyOS Sans SC&quot;;</string>
     <item row="0" column="0">
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
+       <layout class="QHBoxLayout" name="hlOutDir">
         <item>
-         <widget class="QLabel" name="label">
+         <widget class="QLabel" name="labelOutDir">
           <property name="text">
            <string>输出目录:</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="comboBox">
+         <widget class="QComboBox" name="cbOutDir">
           <property name="minimumSize">
            <size>
             <width>400</width>
@@ -62,23 +62,23 @@ font: 11pt &quot;HarmonyOS Sans SC&quot;;</string>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton">
+         <widget class="QPushButton" name="pbOpenOutDir">
           <property name="text">
-           <string>PushButton</string>
+           <string>打开目录</string>
           </property>
          </widget>
         </item>
        </layout>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_3">
+       <widget class="QPushButton" name="pbOpenFolder">
         <property name="text">
          <string>从文件夹导入ncm文件</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="label_2">
+       <widget class="QLabel" name="labelFiles">
         <property name="text">
          <string>将ncm文件拖拽至下方</string>
         </property>
@@ -88,7 +88,7 @@ font: 11pt &quot;HarmonyOS Sans SC&quot;;</string>
        </widget>
       </item>
       <item>
-       <widget class="DropListWidget" name="input_listWidget">
+       <widget class="DropListWidget" name="lwFiles">
         <property name="editTriggers">
          <set>QAbstractItemView::NoEditTriggers</set>
         </property>
@@ -101,7 +101,7 @@ font: 11pt &quot;HarmonyOS Sans SC&quot;;</string>
        </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <layout class="QHBoxLayout" name="hlProcess">
         <item>
          <widget class="QProgressBar" name="progressBar">
           <property name="value">
@@ -110,9 +110,9 @@ font: 11pt &quot;HarmonyOS Sans SC&quot;;</string>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_2">
+         <widget class="QPushButton" name="pbProcess">
           <property name="text">
-           <string>PushButton</string>
+           <string>处理文件</string>
           </property>
          </widget>
         </item>
@@ -131,7 +131,7 @@ font: 11pt &quot;HarmonyOS Sans SC&quot;;</string>
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>input_listWidget</tabstop>
+  <tabstop>lwFiles</tabstop>
  </tabstops>
  <resources/>
  <connections/>
