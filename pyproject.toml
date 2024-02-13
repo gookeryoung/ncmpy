@@ -6,8 +6,8 @@ authors = ["Young <gooker_young@163.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.8"
-PySide2 = "^5.15.2.1"
+python = "~3.8"
+PySide2 = "~5.14"
 qt-material = "^2.14"
 
 [build-system]
