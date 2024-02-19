@@ -1,6 +1,7 @@
-from PySide2.QtCore import QRunnable, Signal, QObject
+from pathlib import Path
 
-from ncmdump.core import ncmdump as ncmdump
+from PySide2.QtCore import QRunnable, Signal, QObject
+from ncmpy.libncmdump import ncmdump
 
 
 class UnlockRunner(QRunnable, QObject):
@@ -13,5 +14,7 @@ class UnlockRunner(QRunnable, QObject):
         self.out_dir = out_dir
 
     def run(self):
-        ncmdump(self.input_path, self.out_dir)
+        src_file = Path(self.input_path)
+        out_file = src_file.with_suffix('.flac')
+        ncmdump(src_file.as_posix(), out_file.as_posix())
         self.runner_finished.emit()

@@ -16,8 +16,10 @@ maturin = "^1.4.0"
 libncmdump = { path = "./libncmdump/target/wheels/libncmdump-0.1.0-cp38-none-win_amd64.whl" }
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+#requires = ["poetry-core"]
+#build-backend = "poetry.core.masonry.api"
+requires = ["maturin>=1.4,<2.0"]
+build-backend = "maturin"
 
 [[tool.poetry.source]]
 name = 'tuna'
