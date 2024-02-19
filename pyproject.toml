@@ -28,3 +28,8 @@ priority = "default"
 name = 'aliyun'
 url = 'https://mirrors.aliyun.com/pypi/'
 priority = "supplemental"
+
+[tool.maturin]
+features = ["pyo3/extension-module"]
+python-source = "src"
+module-name = "ncmpy.libncmdump"
