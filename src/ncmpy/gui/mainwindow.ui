@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>600</width>
-    <height>464</height>
+    <height>605</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -98,6 +98,25 @@ font: 11pt &quot;HarmonyOS Sans SC&quot;;</string>
         <property name="sortingEnabled">
          <bool>true</bool>
         </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="gbMessage">
+        <property name="title">
+         <string>消息</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QListWidget" name="lwMessage">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>240</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
       <item>

@@ -3,9 +3,8 @@ import typing
 from PySide2.QtCore import QDir, QFileInfo, QThread
 from PySide2.QtWidgets import QFileDialog, QMainWindow, QMessageBox
 
-from gui.ui_mainwindow import Ui_MainWindow
-from unlocker.unlocker import Unlocker
-from config import DIR_TEST, DIR_TEST_FILE
+from ncmpy.gui.ui_mainwindow import Ui_MainWindow
+from ncmpy.unlocker.unlocker import Unlocker
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -15,11 +14,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.pbOpenFolder.setFocus()
 
         self.unlock_thread: typing.Optional[QThread] = None
-
-        # TODO: TEST CODE
-        self.cbOutDir.insertItem(0, str(DIR_TEST))
-        self.lwFiles.add_file(str(DIR_TEST_FILE))
-
         self.pbOpenOutDir.clicked.connect(self.open_out_directory)
         self.pbOpenFolder.clicked.connect(self.open_import_directory)
         self.pbProcess.clicked.connect(self.process_files)
@@ -72,18 +66,25 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.pbOpenOutDir.setEnabled(False)
         self.cbOutDir.setEnabled(False)
         self.lwFiles.setEnabled(False)
+        self.lwMessage.setEnabled(True)
+        self.lwMessage.clear()
 
-        self.unlock_thread = Unlocker(parent=self, list_widget=self.lwFiles, out_dir=out_dir.absoluteFilePath())
+        self.unlock_thread = Unlocker(
+            parent=self, list_widget=self.lwFiles, out_dir=out_dir.absoluteFilePath()
+        )
+        self.unlock_thread.sig_unlocked.connect(self.on_unlocked)
+        self.unlock_thread.sig_error_msg.connect(self.on_msg)
+        self.unlock_thread.finished.connect(self.on_finished)
         self.unlock_thread.start()
-        self.unlock_thread.unlocked.connect(self.unlocked)
-        self.unlock_thread.finished.connect(self.all_finished)
 
-    def unlocked(self, current_count: int, total_count: int) -> None:
+    def on_unlocked(self, current_count: int, total_count: int) -> None:
         self.progressBar.setValue(current_count / total_count)
 
-    def all_finished(self):
+    def on_msg(self, msg: str):
+        self.lwMessage.addItem(msg)
+
+    def on_finished(self):
         self.disconnect(self.unlock_thread)
-        self.unlock_thread.deleteLater()
         self.unlock_thread = None
 
         QMessageBox.information(self, "提示", "解锁已完成")

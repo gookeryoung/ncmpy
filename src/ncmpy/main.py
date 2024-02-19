@@ -1,8 +1,9 @@
 import sys
 
-from gui.mainwindow import MainWindow
 from PySide2.QtWidgets import QApplication
 from qt_material import apply_stylesheet
+
+from gui.mainwindow import MainWindow
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

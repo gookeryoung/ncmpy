@@ -5,7 +5,8 @@ from ncmpy.libncmdump import ncmdump
 
 
 class UnlockRunner(QRunnable, QObject):
-    runner_finished = Signal()
+    sig_runner_finished = Signal()
+    sig_error_msg = Signal(str)
 
     def __init__(self, input_path: str, out_dir: str):
         super().__init__()
@@ -16,5 +17,8 @@ class UnlockRunner(QRunnable, QObject):
     def run(self):
         src_file = Path(self.input_path)
         out_file = src_file.with_suffix('.flac')
-        ncmdump(src_file.as_posix(), out_file.as_posix())
-        self.runner_finished.emit()
+        if not out_file.exists():
+            ncmdump(src_file.as_posix(), out_file.as_posix())
+        else:
+            self.sig_error_msg.emit(f'文件已存在{out_file.name}')
+        self.sig_runner_finished.emit()
