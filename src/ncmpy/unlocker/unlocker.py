@@ -1,41 +1,35 @@
-from PySide2.QtCore import QThread, Signal, QThreadPool
-
+from PySide2.QtCore import QThread, QThreadPool, Signal
 from ncmpy.gui.droplistwidget import DropListWidget
 from ncmpy.unlocker.unlockrunner import UnlockRunner
 
 
 class Unlocker(QThread):
     sig_unlocked = Signal(int, int)
-    sig_error_msg = Signal(str)
+    sig_msg_updated = Signal(str)
 
-    def __init__(self, parent=None, list_widget: DropListWidget = None, out_dir: str = ""):
-        super(Unlocker, self).__init__(parent)
-        self.setParent(parent)
+    def __init__(self, list_widget: DropListWidget, out_dir: str):
+        super().__init__()
 
         self.list_widget = list_widget
         self.out_dir = out_dir
+
         self.unlocked_count = 0
-        self.count = 0
-        self.thread_pool = QThreadPool(self)
+        self.total_count = 0
+        self.threadpool = QThreadPool()
+        self.threadpool.setMaxThreadCount(5)
 
-    def run(self):
-        self.count = self.list_widget.get_file_count()
-        for i in range(self.count):
-            input_file = self.list_widget.get_next_file()
-            runner = UnlockRunner(input_file, self.out_dir)
-            runner.sig_runner_finished.connect(self.on_runner_finished)
-            runner.sig_error_msg.connect(self.on_error_msg)
+    def run(self) -> None:
+        self.sig_msg_updated.emit(f"启动解锁线程: id={QThread.currentThread()}")
 
-            ok = False
-            while not ok:
-                ok = self.thread_pool.tryStart(runner)
+        self.total_count = self.list_widget.get_file_count()
+        for i in range(self.total_count):
+            file = self.list_widget.get_next_file()
+            runner = UnlockRunner(file, out_dir=self.out_dir)
+            self.sig_msg_updated.emit(f"解锁文件: {file}")
+            self.threadpool.start(runner)
 
-        self.thread_pool.waitForDone()
-        self.exit()
+        self.sig_msg_updated.emit(f"结束解锁线程: id={QThread.currentThread()}")
 
     def on_runner_finished(self):
         self.unlocked_count += 1
-        self.sig_unlocked.emit(self.unlocked_count, count)
-
-    def on_error_msg(self, msg: str):
-        self.sig_error_msg.emit(msg)
+        self.sig_unlocked.emit(self.unlocked_count, self.total_count)

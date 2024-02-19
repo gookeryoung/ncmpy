@@ -1,8 +1,8 @@
 import typing
 
-from PySide2.QtCore import QDir, QFileInfo, QThread
+from PySide2.QtCore import QDir, QFileInfo
 from PySide2.QtWidgets import QFileDialog, QMainWindow, QMessageBox
-
+from ncmpy import config
 from ncmpy.gui.ui_mainwindow import Ui_MainWindow
 from ncmpy.unlocker.unlocker import Unlocker
 
@@ -12,11 +12,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super().__init__(parent)
         self.setupUi(self)
         self.pbOpenFolder.setFocus()
+        self.resize(1440, 900)
 
-        self.unlock_thread: typing.Optional[QThread] = None
+        self.cbOutDir.insertItem(0, config.DIR_TEST.as_posix())
+        self.lwFiles.add_file(config.DIR_TEST_FILE.as_posix())
+
         self.pbOpenOutDir.clicked.connect(self.open_out_directory)
         self.pbOpenFolder.clicked.connect(self.open_import_directory)
         self.pbProcess.clicked.connect(self.process_files)
+
+        self.unlocker_thread: typing.Optional[QThread] = None
 
     def open_out_directory(self):
         out_dir = QFileDialog.getExistingDirectory(
@@ -53,13 +58,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             QMessageBox.warning(self, "警告", "输出目录不正确")
             return
 
-        if not self.lwFiles.count():
+        if not self.lwFiles.get_file_count():
             QMessageBox.warning(self, "警告", "没有输入文件")
             self.pbOpenOutDir.setFocus()
             return
 
-        if self.unlock_thread:
-            QMessageBox.warning(self, "警告", "正在进行解锁...")
+        if self.unlocker_thread:
+            QMessageBox.warning(self, "警告", "已启动线程")
             return
 
         self.pbOpenFolder.setEnabled(False)
@@ -69,26 +74,24 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.lwMessage.setEnabled(True)
         self.lwMessage.clear()
 
-        self.unlock_thread = Unlocker(
-            parent=self, list_widget=self.lwFiles, out_dir=out_dir.absoluteFilePath()
-        )
-        self.unlock_thread.sig_unlocked.connect(self.on_unlocked)
-        self.unlock_thread.sig_error_msg.connect(self.on_msg)
-        self.unlock_thread.finished.connect(self.on_finished)
-        self.unlock_thread.start()
+        self.unlocker_thread = Unlocker(self.lwFiles, self.cbOutDir.currentText())
+        self.unlocker_thread.sig_msg_updated.connect(self.on_msg)
+        self.unlocker_thread.finished.connect(self.on_all_finished)
+        self.unlocker_thread.sig_unlocked.connect(self.on_unlocked)
+        self.unlocker_thread.start()
 
-    def on_unlocked(self, current_count: int, total_count: int) -> None:
-        self.progressBar.setValue(current_count / total_count)
+    def on_unlocked(self, unlocked_count: int, total_count: int) -> None:
+        self.progressBar.setValue(unlocked_count / total_count)
 
     def on_msg(self, msg: str):
         self.lwMessage.addItem(msg)
 
-    def on_finished(self):
-        self.disconnect(self.unlock_thread)
-        self.unlock_thread = None
+    def on_all_finished(self):
+        self.disconnect(self.unlocker_thread)
+        self.unlocker_thread.deleteLater()
+        self.unlocker_thread = None
 
         QMessageBox.information(self, "提示", "解锁已完成")
-        self.progressBar.setValue(0)
         self.cbOutDir.setEnabled(True)
         self.pbOpenFolder.setEnabled(True)
         self.pbOpenOutDir.setEnabled(True)
