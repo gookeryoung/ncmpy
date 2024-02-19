@@ -5,6 +5,7 @@ from PySide2.QtWidgets import QFileDialog, QMainWindow, QMessageBox
 
 from gui.ui_mainwindow import Ui_MainWindow
 from unlocker.unlocker import Unlocker
+from config import DIR_TEST, DIR_TEST_FILE
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -16,8 +17,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.unlock_thread: typing.Optional[QThread] = None
 
         # TODO: TEST CODE
-        self.cbOutDir.insertItem(0, r'D:\CloudMusic\VipSongsDownload\电台节目')
-        self.lwFiles.add_file(r'D:\CloudMusic\VipSongsDownload\电台节目\Now冥想 - 改善睡眠第2天 · 触摸式放松练习.ncm')
+        self.cbOutDir.insertItem(0, str(DIR_TEST))
+        self.lwFiles.add_file(str(DIR_TEST_FILE))
 
         self.pbOpenOutDir.clicked.connect(self.open_out_directory)
         self.pbOpenFolder.clicked.connect(self.open_import_directory)
