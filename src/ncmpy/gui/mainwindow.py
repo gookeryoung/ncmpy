@@ -2,7 +2,6 @@ import typing
 
 from PySide2.QtCore import QDir, QFileInfo
 from PySide2.QtWidgets import QFileDialog, QMainWindow, QMessageBox
-from ncmpy import config
 from ncmpy.gui.ui_mainwindow import Ui_MainWindow
 from ncmpy.unlocker.unlocker import Unlocker
 
@@ -11,12 +10,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
-        self.pbOpenFolder.setFocus()
         self.resize(1440, 900)
 
-        self.cbOutDir.insertItem(0, config.DIR_TEST.as_posix())
-        self.lwFiles.add_file(config.DIR_TEST_FILE.as_posix())
-
+        self.pbOpenFolder.setFocus()
         self.pbOpenOutDir.clicked.connect(self.open_out_directory)
         self.pbOpenFolder.clicked.connect(self.open_import_directory)
         self.pbProcess.clicked.connect(self.process_files)

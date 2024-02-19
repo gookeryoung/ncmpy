@@ -15,7 +15,7 @@ class UnlockRunner(QRunnable):
         print(f"线程已启动: id={QThread.currentThread()}")
 
         src_file = Path(self.input_path)
-        out_file = src_file.with_suffix(".flac")
+        out_file = Path(self.out_dir) / src_file.with_suffix(".flac").name
         if not out_file.exists():
             ncmdump(src_file.as_posix(), out_file.as_posix())
         else:
